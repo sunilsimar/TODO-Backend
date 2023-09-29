@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 //we dont use this todos array bcz we want to store data in file so after restarting our data is saved
-var todo = [];
+var todos = [];
 
 function findIndex(arr, id) {
   for (let i = 0; i < arr.length; i++) {
@@ -29,11 +29,20 @@ function removeIndex(arr, index) {
 }
 
 app.get("/todos", (req, res) => {
-  res.json(todo);
+  res.json(todos);
   // fs.readFile("todos.json", "utf-8", (err, data) => {
   //   if (err) throw err;
   //   res.json(JSON.parse(data));
   // });
+});
+
+app.get("/todos/:id", (req, res) => {
+  const todoIndex = findIndex(todos, parseInt(req.params.id));
+  if (todoIndex == -1) {
+    res.status(404).send();
+  } else {
+    res.json(todos[todoIndex]);
+  }
 });
 
 app.post("/todos/:id", (req, res) => {
@@ -42,12 +51,12 @@ app.post("/todos/:id", (req, res) => {
     title: req.body.title,
     description: req.body.description,
   };
-  fs.readFile("todos.json", "utf-8", (err, data) => {
-    if (err) throw err;
-    const todo = JSON.parse(data);
-    todo.push(newTodo);
-  });
-  todo.push(newTodo);
+  // fs.readFile("todos.json", "utf-8", (err, data) => {
+  //   if (err) throw err;
+  //   const todo = JSON.parse(data);
+  //   todo.push(newTodo);
+  // });
+  todos.push(newTodo);
   res.status(201).json(newTodo);
 });
 
@@ -57,7 +66,7 @@ app.delete("/todos/:id", (req, res) => {
   if (todoIndex == -1) {
     res.status(404).send();
   } else {
-    todo = removeIndex(todo, todoIndex);
+    todos = removeIndex(todos, todoIndex);
     res.status(200).send();
   }
 });
@@ -68,9 +77,10 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// app.use((req, res, next) => {
-//   res.status(404).send();
-// });
+//for all other routes return 404
+app.use((req, res, next) => {
+  res.status(404).send();
+});
 
 app.listen(3003, () => {
   console.log(`app is listening on port 3003`);

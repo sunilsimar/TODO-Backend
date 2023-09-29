@@ -4,10 +4,68 @@
     </title>
 </head>
 <script>
-      function parseResponse(data){
+
+    function todosCallback(data){
+        console.log(data)
+        //inserting Javascript vairable inside the HTML 
+        //define a div mainArea get its data and change its data to our todos data and show it on website
+        var parentElement = document.getElementById("mainArea");
+        // parentElement.innerHTML = JSON.stringify(data);
+        
+        //Creating a div inside div by JavaScript
+        for(var i=0; i<data.length; i++){
+            var childElement = document.createElement("div");
+
+            var grandChildElement1 = document.createElement("span");
+            grandChildElement1.innerHTML = data[i].title
+
+            var grandChildElement2 = document.createElement("span");
+            grandChildElement2.innerHTML = data[i].description
+
+            var grandChildElement3 = document.createElement("button");
+            grandChildElement3.innerHTML = "Delete"
+
+            childElement.appendChild(grandChildElement1)
+            childElement.appendChild(grandChildElement2)
+            childElement.appendChild(grandChildElement3)
+
+            parentElement.appendChild(childElement);
+        } 
+    }
+
+    function getDataCallback(resp){
+        resp.json().then(todosCallback)
+    }
+
+    function getData(){
+        fetch("http://localhost:3003/todos",{
+            method:"GET",
+        }).then(getDataCallback)
+    }
+   //calling the get data function
+    getData();
+
+    function parseResponse(data){
             console.log(data)
+
+            var parentElement = document.getElementById("mainArea")
+            
+            var childElement = document.createElement("div");
+
+            var grandChildElement1 = document.createElement("span");
+            grandChildElement1.innerHTML = data.title
+
+            var grandChildElement2 = document.createElement("span");
+            grandChildElement2.innerHTML = data.description
+
+            var grandChildElement3 = document.createElement("button");
+            grandChildElement3.innerHTML = "Delete"
+
+            childElement.appendChild(grandChildElement1)
+            childElement.appendChild(grandChildElement2)
+            childElement.appendChild(grandChildElement3)
         }
-        function callback(resp){
+    function callback(resp){
             resp.json().then(parseResponse)
         }
     //connecting fronted to backend(browser to server)
@@ -15,7 +73,6 @@
         var title = document.getElementById("title").value;
         var description = document.getElementById("description").value;
         fetch("http://localhost:3003/todos/:id",{
-            // method:"GET"
             method:"POST",
             body: JSON.stringify({
                 title:title,
@@ -36,6 +93,6 @@
     <br><br>
     <button onclick="onPress()">send todo</button>
     <div id="mainArea">
-
+        
     </div> 
 </body>    
