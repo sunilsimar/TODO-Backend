@@ -4,22 +4,32 @@
     </title>
 </head>
 <script>
-    //connecting fronted to backend(browser to server)
-    function onPress(){
-        function parseResponse(data){
+      function parseResponse(data){
             console.log(data)
         }
         function callback(resp){
             resp.json().then(parseResponse)
         }
-        fetch("http://localhost:3003/todos",{
-            method:"GET"
+    //connecting fronted to backend(browser to server)
+    function onPress(){
+        var title = document.getElementById("title").value;
+        var description = document.getElementById("description").value;
+        fetch("http://localhost:3003/todos/:id",{
+            // method:"GET"
+            method:"POST",
+            body: JSON.stringify({
+                title:title,
+                description:description
+            }),
+            headers:{
+                "Content-Type":"application/json"
+            }
         }).then(callback)
     }
 </script>
 <body>
     Todo title
-    <input type="text" id="title1"></input>
+    <input type="text" id="title"></input>
     <br><br>
     Todo description
     <input type="text" id="description"></input>

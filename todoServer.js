@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 //we dont use this todos array bcz we want to store data in file so after restarting our data is saved
-// let todos = [];
+var todo = [];
 
 function findIndex(arr, id) {
   for (let i = 0; i < arr.length; i++) {
@@ -29,11 +29,11 @@ function removeIndex(arr, index) {
 }
 
 app.get("/todos", (req, res) => {
-  //   res.json(todos);
-  fs.readFile("todos.json", "utf-8", (err, data) => {
-    if (err) throw err;
-    res.json(JSON.parse(data));
-  });
+  res.json(todo);
+  // fs.readFile("todos.json", "utf-8", (err, data) => {
+  //   if (err) throw err;
+  //   res.json(JSON.parse(data));
+  // });
 });
 
 app.post("/todos/:id", (req, res) => {
@@ -44,10 +44,10 @@ app.post("/todos/:id", (req, res) => {
   };
   fs.readFile("todos.json", "utf-8", (err, data) => {
     if (err) throw err;
-    const todos = JSON.parse(data);
-    todos.push(newTodo);
+    const todo = JSON.parse(data);
+    todo.push(newTodo);
   });
-  todos.push(newTodo);
+  todo.push(newTodo);
   res.status(201).json(newTodo);
 });
 
@@ -57,7 +57,7 @@ app.delete("/todos/:id", (req, res) => {
   if (todoIndex == -1) {
     res.status(404).send();
   } else {
-    todos = removeIndex(todos, todoIndex);
+    todo = removeIndex(todo, todoIndex);
     res.status(200).send();
   }
 });
