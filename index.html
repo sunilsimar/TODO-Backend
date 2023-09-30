@@ -4,6 +4,19 @@
     </title>
 </head>
 <script>
+    function deleteDone(){
+        console.log("Done delete")
+    }
+
+    function deleteTodo(id){
+        console.log(id)
+        fetch("http://localhost:3003/todos/" + id ,{
+            method: "DELETE",
+            headers:{
+                "Content-Type":"application/json"
+            }
+        }).then(deleteDone)
+    }
 
     function todosCallback(data){
         console.log(data)
@@ -23,7 +36,8 @@
             grandChildElement2.innerHTML = data[i].description
 
             var grandChildElement3 = document.createElement("button");
-            grandChildElement3.innerHTML = "Delete"
+            grandChildElement3.innerHTML = "Delete";
+            grandChildElement3.setAttribute("onclick","deleteTodo(" + data[i].id+")");
 
             childElement.appendChild(grandChildElement1)
             childElement.appendChild(grandChildElement2)
@@ -45,28 +59,33 @@
    //calling the get data function
     getData();
 
-    function parseResponse(data){
+    function parsedResponse(data){
             console.log(data)
 
+            //the data is updated on backend so after this we update on webpage dynamically
             var parentElement = document.getElementById("mainArea")
-            
             var childElement = document.createElement("div");
 
             var grandChildElement1 = document.createElement("span");
             grandChildElement1.innerHTML = data.title
 
             var grandChildElement2 = document.createElement("span");
-            grandChildElement2.innerHTML = data.description
+            grandChildElement2.innerHTML = data.description 
 
             var grandChildElement3 = document.createElement("button");
             grandChildElement3.innerHTML = "Delete"
+            grandChildElement3.setAttribute("onclick","deleteTodo(" + data.id+")");
 
             childElement.appendChild(grandChildElement1)
             childElement.appendChild(grandChildElement2)
             childElement.appendChild(grandChildElement3)
+
+            parentElement.appendChild(childElement)
+
+
         }
     function callback(resp){
-            resp.json().then(parseResponse)
+            resp.json().then(parsedResponse)
         }
     //connecting fronted to backend(browser to server)
     function onPress(){
